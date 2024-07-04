@@ -115,8 +115,15 @@ extern void SoftwareDelay(uint8_t ms);                                          
 * MPQ4210 hardware configuration functions
 */
 
+// Functions to set and clear ENPWR bit on MPQ421x devices
+void MPQ_DisablePowerSwitching(uint8_t deviceAddress);
+void MPQ_EnablePowerSwitching(uint8_t deviceAddress);
+
+// Function to set GO_BIT on MPQ421x devices
+void MPQ_SET_GOBIT(uint8_t deviceAddress);
+
 // Function to set the VREF registers on the MPQ421x devices
-void MPQ_SetVoltageReference1(uint8_t deviceAddress,uint16_t Vref);
+void MPQ_SetVoltageReference(uint8_t deviceAddress,uint16_t Vref);
 
 // Function to set the switching frequency on the MPQ421x device
 void MPQ_SetSwitchingFrequency(uint8_t deviceAddress,uint8_t Fsw);
