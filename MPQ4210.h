@@ -111,9 +111,25 @@ extern void SoftwareDelay(uint8_t ms);                                          
 #define MPQ4214_ILIM_62mV               0x06
 #define MPQ4214_ILIM_68mV               0x07
 
+// MPQ_INTMASK parameters definition for MPQ4210 devices
+#define MPQ4210_INT_OTP                 0xEF
+#define MPQ4210_INT_OVP                 0xFB
+#define MPQ4210_INT_OCP                 0xFD
+#define MPQ4210_INT_PNG                 0xFE
+
+// MPQ_INTMASK parameters definition for MPQ4214 devices
+#define MPQ4214_INT_OTP                 0xEF
+#define MPQ4214_INT_CC                  0xF7
+#define MPQ4214_INT_OVP                 0xFB
+#define MPQ4214_INT_OCP                 0xFD
+#define MPQ4214_INT_PNG                 0xFE
+
 /*
 * MPQ4210 hardware configuration functions
 */
+
+// Function to set the VREF registers on the MPQ421x devices
+void MPQ_SetVoltageReference(uint8_t deviceAddress,uint16_t Vref);
 
 // Functions to set and clear ENPWR bit on MPQ421x devices
 void MPQ_DisablePowerSwitching(uint8_t deviceAddress);
@@ -122,11 +138,31 @@ void MPQ_EnablePowerSwitching(uint8_t deviceAddress);
 // Function to set GO_BIT on MPQ421x devices
 void MPQ_SET_GOBIT(uint8_t deviceAddress);
 
-// Function to set the VREF registers on the MPQ421x devices
-void MPQ_SetVoltageReference(uint8_t deviceAddress,uint16_t Vref);
+// Functions to set and clear PNG_Latch bit in MPQ421x devices
+void MPQ_PNG_Latch_Disable(uint8_t deviceAddress);
+void MPQ_PNG_Latch_Enable(uint8_t deviceAddress);
+
+// Function to enable frequency spread spectrum on MPQ421x devices
+void MPQ_FreqSpreadSpectrum_Enable(uint8_t deviceAddress);
+
+// Function to disable frequency spread spectrum on MPQ421x devices
+void MPQ_FreqSpreadSpectrum_Disable(uint8_t deviceAddress);
+
+// Function for enabling output discharge path to ground on MPQ421X devices
+void MPQ_OutputDischargePath_Enable(uint8_t deviceAddress);
+
+// Function for disabling output discharge path to ground on MPQ421X devices
+void MPQ_OutputDischargePath_Disable(uint8_t deviceAddress);
+
+// Function to set VREF slew rate on MPQ421x devices
+void MPQ_SetVREF_SlewRate(uint8_t deviceAddress, uint8_t SlewRate);
 
 // Function to set the switching frequency on the MPQ421x device
 void MPQ_SetSwitchingFrequency(uint8_t deviceAddress,uint8_t Fsw);
+
+// Functions to set and clear BB_FSW bit in MPQ421x devices
+void MPQ_Set_BB_FSW_HIGH(uint8_t deviceAddress);
+void MPQ_Set_BB_FSW_LOW(uint8_t deviceAddress);
 
 // Function to set OCP Mode on the MPQ421x device
 void MPQ_setOCPMode(uint8_t deviceAddress,uint8_t OCPMode);
@@ -135,8 +171,13 @@ void MPQ_setOCPMode(uint8_t deviceAddress,uint8_t OCPMode);
 void MPQ_setOVPMode(uint8_t deviceAddress,uint8_t OVPMode);
 
 // Function to set ILIM thresthold on MPQ4210 devices
-void MPQ4210_setILIM(uint8_t deviceAddress,uint8_t ILIMthreshold);
+void MPQ_setILIM(uint8_t deviceAddress,uint8_t ILIMthreshold);
 
-// Function to set ILIM thresthold on MPQ4214 devices
-void MPQ4214_setILIM(uint8_t deviceAddress,uint8_t ILIMthreshold);
+// Function to reset Interrupt Status vector in MPQ421x devices
+void MPQ_IntClear(uint8_t deviceAddress);
 
+// Function for enabling interrupts in MPQ421x devices
+void MPQ_IntEnable(uint8_t deviceAddress);
+
+// Function for disabling interrupts in MPQ421x devices
+void MPQ_IntDisable(uint8_t deviceAddress);
