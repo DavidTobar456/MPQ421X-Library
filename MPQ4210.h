@@ -177,7 +177,7 @@ void MPQ_setILIM(uint8_t deviceAddress,uint8_t ILIMthreshold);
 void MPQ_IntClear(uint8_t deviceAddress);
 
 // Function for enabling interrupts in MPQ421x devices
-void MPQ_IntEnable(uint8_t deviceAddress);
+void MPQ_IntEnable(uint8_t deviceAddress,uint8_t interrupt);
 
 // Function for disabling interrupts in MPQ421x devices
-void MPQ_IntDisable(uint8_t deviceAddress);
+void MPQ_IntDisable(uint8_t deviceAddress,uint8_t interrupt);

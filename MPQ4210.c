@@ -180,6 +180,68 @@ void MPQ_SetSwitchingFrequency(uint8_t deviceAddress, uint8_t Fsw){
     I2C_WriteRegByte(deviceAddress,MPQREG_CONTROL2,(tmp&MPQ_CONTROL2_FSW_MASK)|Fsw);
 }
 /******************************************
+* @ brief Set Buck-Boost region switching to higher switching frequency
+* @ param uint8_t deviceAddress, contains the address of the MPQ
+*       that is trying to be reached
+* @ note Set the slewrate BB_FSW bit from the CONTROL2 register
+*******************************************/
+// Must use when MPQ4210's address is 0x66
+void MPQ_Set_BB_FSW_HIGH(uint8_t deviceAddress){
+    // Read CONTROL2 register to a temp variable
+    uint8_t tmp = I2C_ReadRegByte(deviceAddress,MPQREG_CONTROL2);
+    // Set the GO_BIT bit and keep the others
+    I2C_WriteRegByte(deviceAddress,MPQREG_CONTROL2,(tmp&MPQ_CONTROL2_BBFSW_MASK)|MPQ_CONTROL2_BBFSW_ON);
+}
+/******************************************
+* @ brief Set Buck-Boost region switching to lower switching frequency
+* @ param uint8_t deviceAddress, contains the address of the MPQ
+*       that is trying to be reached
+* @ note Clear the slewrate BB_FSW bit from the CONTROL2 register
+*******************************************/
+// Must use when MPQ4210's address is 0x66
+void MPQ_Set_BB_FSW_HIGH(uint8_t deviceAddress){
+    // Read CONTROL2 register to a temp variable
+    uint8_t tmp = I2C_ReadRegByte(deviceAddress,MPQREG_CONTROL2);
+    // Set the GO_BIT bit and keep the others
+    I2C_WriteRegByte(deviceAddress,MPQREG_CONTROL2,(tmp&MPQ_CONTROL2_BBFSW_MASK)|MPQ_CONTROL2_BBFSW_OFF);
+}
+/******************************************
+* @ brief Configuration of Over Current Protection mode
+* @ param uint8_t deviceAddress, uint8_t OCPMode
+*       from the following selection
+*       - MPQ_CONTROL2_OCP_MODE_NONE
+*       - MPQ_CONTROL2_OCP_MODE_HICCUP
+*       - MPQ_CONTROL2_OCP_MODE_LATCH
+* @ note OCP is triggered when the cycle-by-cycle current
+*       limit is reached.
+*******************************************/
+// Must use when MPQ4210's address is 0x64
+void MPQ_setOCPMode(uint8_t deviceAddress,uint8_t OCPMode){
+    // We read the full control2 register in order to be able to modify
+    // the FSW bits without modifying any other register
+    uint8_t tmp = I2C_ReadRegByte(deviceAddress,MPQREG_CONTROL2);
+    // We modify only de FSW bits and set them to the new Fsw value
+    I2C_WriteRegByte(deviceAddress,MPQREG_CONTROL2,(tmp&MPQ_CONTROL2_OCP_MODE_MASK)|OCPMode);
+}
+/******************************************
+* @ brief Configuration of Over Voltage Protection mode
+* @ param uint8_t deviceAddress, uint8_t OCPMode
+*       from the following selection
+*       - MPQ_CONTROL2_OVP_MODE_NONE
+*       - MPQ_CONTROL2_OVP_MODE_HICCUP
+*       - MPQ_CONTROL2_OVP_MODE_LATCH
+* @ note OVP is triggered once Vref reaches 127% that of
+        Vref voltage.
+*******************************************/
+// Must use when MPQ4210's address is 0x64
+void MPQ_setOVPMode(uint8_t deviceAddress,uint8_t OVPMode){
+    // We read the full control2 register in order to be able to modify
+    // the FSW bits without modifying any other register
+    uint8_t tmp = I2C_ReadRegByte(deviceAddress,MPQREG_CONTROL2);
+    // We modify only de FSW bits and set them to the new Fsw value
+    I2C_WriteRegByte(deviceAddress,MPQREG_CONTROL2,(tmp&MPQ_CONTROL2_OVP_MODE_MASK)|OVPMode);
+}
+/******************************************
 * @ brief Configuration of average current limit through ILIM reg
 * @ param ILIMthreshold uint8_t containing the threshold to be set
 *       from the following selection for MPQ4210 devices
@@ -209,4 +271,66 @@ void MPQ_SetSwitchingFrequency(uint8_t deviceAddress, uint8_t Fsw){
 void MPQ_setILIM1(uint8_t deviceAddress, uint8_t ILIMthreshold){
     // We set the ILIM register to the new value set
     I2C_WriteRegByte(deviceAddress,MPQREG_ILIM,ILIMthreshold);
+}
+/******************************************
+* @ brief Resets the interrupt status register
+* @ param uint8_t deviceAddress, contains the address of the MPQ
+*       that is trying to be reached
+* @ note Writes 0xFF into the Interrupt Status byte to reset it
+*******************************************/
+// Must use when MPQ4210's address is 0x66
+void MPQ_IntClear(uint8_t deviceAddress){
+    // Write 0xFF on the Interrupt Status register
+    I2C_WriteRegByte(deviceAddress,MPQREG_INT_STATUS,0xFF);
+}
+
+/******************************************
+* @ brief Interrupt enabling function
+* @ param uint8_t deviceAddress, uint8_t interrupt
+*       from the following selection for MPQ4210 devices
+*       - MPQ4210_INT_OTP                 
+*       - MPQ4210_INT_OVP                 
+*       - MPQ4210_INT_OCP                 
+*       - MPQ4210_INT_PNG                 
+*       And from the following selection for MPQ4214 devices
+*       - MPQ4214_INT_OTP
+*       - MPQ4214_INT_CC
+*       - MPQ4214_INT_OVP
+*       - MPQ4214_INT_OCP
+*       - MPQ4214_INT_PNG
+* @ note The interrupt mask bit specified by interrupt parameter
+*       is set on the Interrupt Mask register
+*******************************************/
+// Must use when MPQ4210's address is 0x64
+void MPQ_IntEnable(uint8_t deviceAddress,uint8_t interrupt){
+    // We read the full control2 register in order to be able to modify
+    // the FSW bits without modifying any other register
+    uint8_t tmp = I2C_ReadRegByte(deviceAddress,MPQREG_INT_MASK);
+    // We modify only de FSW bits and set them to the new Fsw value
+    I2C_WriteRegByte(deviceAddress,MPQREG_INT_MASK,(tmp&interrupt)|(~interrupt&0xFF));
+}
+/******************************************
+* @ brief Interrupt disable function
+* @ param uint8_t deviceAddress, uint8_t interrupt
+*       from the following selection for MPQ4210 devices
+*       - MPQ4210_INT_OTP                 
+*       - MPQ4210_INT_OVP                 
+*       - MPQ4210_INT_OCP                 
+*       - MPQ4210_INT_PNG                 
+*       And from the following selection for MPQ4214 devices
+*       - MPQ4214_INT_OTP
+*       - MPQ4214_INT_CC
+*       - MPQ4214_INT_OVP
+*       - MPQ4214_INT_OCP
+*       - MPQ4214_INT_PNG
+* @ note The interrupt mask bit specified by interrupt parameter
+*       is cleared on the Interrupt Mask register
+*******************************************/
+// Must use when MPQ4210's address is 0x64
+void MPQ_IntEnable(uint8_t deviceAddress,uint8_t interrupt){
+    // We read the full control2 register in order to be able to modify
+    // the FSW bits without modifying any other register
+    uint8_t tmp = I2C_ReadRegByte(deviceAddress,MPQREG_INT_MASK);
+    // We modify only de FSW bits and set them to the new Fsw value
+    I2C_WriteRegByte(deviceAddress,MPQREG_INT_MASK,(tmp&interrupt)|(~interrupt&0x00));
 }
