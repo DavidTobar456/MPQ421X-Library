@@ -115,51 +115,218 @@ int main(){
     I2C_WriteRegByte(SLAVE_ADDRESS,MPQREG_REF_LSB,0b00000100);
     I2C_WriteRegByte(SLAVE_ADDRESS,MPQREG_REF_MSB,0b00111110);
     I2C_WriteRegByte(SLAVE_ADDRESS,MPQREG_CONTROL1,0b01000000);
-    I2C_WriteRegByte(SLAVE_ADDRESS,MPQREG_ILIM,0b00000001);
-    // Verification of what has been written on the eeprom
-    printf("Now reading the loaded configuration\n\n");
-    uint8_t RegAddress = MPQREG_REF_LSB;
-    uint8_t rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,RegAddress);
-    printf("Read 0x%X from register 0x%X\n", rcvd, RegAddress);
-    RegAddress = MPQREG_REF_MSB;
-    rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,RegAddress);
-    printf("Read 0x%X from register 0x%X\n", rcvd, RegAddress);
-    RegAddress = MPQREG_CONTROL1;
-    rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,RegAddress);
-    printf("Read 0x%X from register 0x%X\n", rcvd, RegAddress);
-    RegAddress = MPQREG_ILIM;
-    rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,RegAddress);
-    printf("Read 0x%X from register 0x%X\n\n", rcvd, RegAddress);
+    I2C_WriteRegByte(SLAVE_ADDRESS,MPQREG_CONTROL2,0b10000101);
+    I2C_WriteRegByte(SLAVE_ADDRESS,MPQREG_ILIM,0b00001001);
+    I2C_WriteRegByte(SLAVE_ADDRESS,MPQREG_INT_STATUS,0b00000000);
+    I2C_WriteRegByte(SLAVE_ADDRESS,MPQREG_INT_MASK,0b00000001);
 
-    // Test of the library functions which change VREF and ILIM
+    // Test of the library functions which change VREF
     // Setting voltage to 1.1 V
     // Values to be set should go as following
     // REF_LSB = 100
     // REF_MSB = 10001001
+    uint8_t rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,MPQREG_REF_LSB);
+    printf("REF_LSB reg: 0x%X",rcvd);
+    rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,MPQREG_REF_MSB);
+    printf("\tREF_MSB reg: 0x%X\n",rcvd);
     printf("Setting voltage reference to 1.1V, VOUT should be 11V\n");
-    MPQ_SetVoltageReference1(1100);
+    MPQ_SetVoltageReference(SLAVE_ADDRESS,1100);
+    printf("REF_LSB reg: 0x%X",rcvd);
+    rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,MPQREG_REF_MSB);
+    printf("\tREF_MSB reg: 0x%X\n\n",rcvd);
+    I2C_WriteRegByte(SLAVE_ADDRESS,MPQREG_CONTROL1,0b01000000);
+
+    // Test of MPQ_DisablePowerSwitching() and MPQ_EnablePowerSwitching()
+    // functions
+    rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,MPQREG_CONTROL1);
+    printf("CONTROL1 reg: 0x%X\n",rcvd);
+    printf("Enabling Power switching...\n");
+    MPQ_EnablePowerSwitching(SLAVE_ADDRESS);
+    rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,MPQREG_CONTROL1);
+    printf("CONTROL1 reg: 0x%X\n",rcvd);
+    printf("Disabling Power switching...\n");
+    MPQ_DisablePowerSwitching(SLAVE_ADDRESS);
+    rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,MPQREG_CONTROL1);
+    printf("CONTROL1 reg: 0x%X\n\n",rcvd);
+
+    // Test of MPQ_SET_GOBIT() function
+    rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,MPQREG_CONTROL1);
+    printf("CONTROL1 reg: 0x%X\n",rcvd);
+    printf("Setting Go bit...\n");
+    MPQ_SET_GOBIT(SLAVE_ADDRESS);
+    rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,MPQREG_CONTROL1);
+    printf("CONTROL1 reg: 0x%X\n\n",rcvd);
+    I2C_WriteRegByte(SLAVE_ADDRESS,MPQREG_CONTROL1,0b01000000);
+
+    // Test of MPQ_PNG_Latch_Enable() and MPQ_PNG_Latch_Disable()
+    // functions
+    rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,MPQREG_CONTROL1);
+    printf("CONTROL1 reg: 0x%X\n",rcvd);
+    printf("Enabling PNG latch functionality...\n");
+    MPQ_PNG_Latch_Enable(SLAVE_ADDRESS);
+    rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,MPQREG_CONTROL1);
+    printf("CONTROL1 reg: 0x%X\n",rcvd);
+    printf("Disabling PNG latch functionality...\n");
+    MPQ_PNG_Latch_Disable(SLAVE_ADDRESS);
+    rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,MPQREG_CONTROL1);
+    printf("CONTROL1 reg: 0x%X\n\n",rcvd);
+
+    // Test of MPQ_FreqSpreadSpectrum_Enable() and MPQ_FreqSpreadSpectrum_Disable()
+    // functions
+    rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,MPQREG_CONTROL1);
+    printf("CONTROL1 reg: 0x%X\n",rcvd);
+    printf("Enabling frequency spread spectrum functionality...\n");
+    MPQ_FreqSpreadSpectrum_Enable(SLAVE_ADDRESS);
+    rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,MPQREG_CONTROL1);
+    printf("CONTROL1 reg: 0x%X\n",rcvd);
+    printf("Disabling frequency spread spectrum functionality...\n");
+    MPQ_FreqSpreadSpectrum_Disable(SLAVE_ADDRESS);
+    rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,MPQREG_CONTROL1);
+    printf("CONTROL1 reg: 0x%X\n\n",rcvd);
+
+    // Test of MPQ_OutputDischargePath_Enable() and MPQ_OutputDischargePath_Disable()
+    // functions
+    rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,MPQREG_CONTROL1);
+    printf("CONTROL1 reg: 0x%X\n",rcvd);
+    printf("Enabling output discharge path to ground...\n");
+    MPQ_OutputDischargePath_Enable(SLAVE_ADDRESS);
+    rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,MPQREG_CONTROL1);
+    printf("CONTROL1 reg: 0x%X\n",rcvd);
+    printf("Disabling output discharge path to ground...\n");
+    MPQ_OutputDischargePath_Disable(SLAVE_ADDRESS);
+    rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,MPQREG_CONTROL1);
+    printf("CONTROL1 reg: 0x%X\n\n",rcvd);
+
+    // Test of MPQ_SetVREF_SlewRate() function
+    rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,MPQREG_CONTROL1);
+    printf("CONTROL1 reg: 0x%X\n",rcvd);
+    printf("Setting SR to 38mV/ms MPQ4210...\n");
+    MPQ_SetVREF_SlewRate(SLAVE_ADDRESS,MPQ4210_CONTROL1_SR_38mV_ms);
+    rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,MPQREG_CONTROL1);
+    printf("CONTROL1 reg: 0x%X\n",rcvd);
+    printf("Setting SR to 50mV/ms MPQ4210...\n");
+    MPQ_SetVREF_SlewRate(SLAVE_ADDRESS,MPQ4210_CONTROL1_SR_50mV_ms);
+    rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,MPQREG_CONTROL1);
+    printf("CONTROL1 reg: 0x%X\n",rcvd);
+    printf("Setting SR to 75mV/ms MPQ4210...\n");
+    MPQ_SetVREF_SlewRate(SLAVE_ADDRESS,MPQ4210_CONTROL1_SR_75mV_ms);
+    rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,MPQREG_CONTROL1);
+    printf("CONTROL1 reg: 0x%X\n",rcvd);
+    printf("Setting SR to 150mV/ms MPQ4210...\n");
+    MPQ_SetVREF_SlewRate(SLAVE_ADDRESS,MPQ4210_CONTROL1_SR_150mV_ms);
+    rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,MPQREG_CONTROL1);
+    printf("CONTROL1 reg: 0x%X\n",rcvd);
+    printf("Setting SR to 38mV/ms MPQ4214...\n");
+    MPQ_SetVREF_SlewRate(SLAVE_ADDRESS,MPQ4214_CONTROL1_SR_38mV_ms);
+    rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,MPQREG_CONTROL1);
+    printf("CONTROL1 reg: 0x%X\n",rcvd);
+    printf("Setting SR to 50mV/ms MPQ4214...\n");
+    MPQ_SetVREF_SlewRate(SLAVE_ADDRESS,MPQ4214_CONTROL1_SR_50mV_ms);
+    rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,MPQREG_CONTROL1);
+    printf("CONTROL1 reg: 0x%X\n",rcvd);
+    printf("Setting SR to 72mV/ms MPQ4214...\n");
+    MPQ_SetVREF_SlewRate(SLAVE_ADDRESS,MPQ4214_CONTROL1_SR_72mV_ms);
+    rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,MPQREG_CONTROL1);
+    printf("CONTROL1 reg: 0x%X\n",rcvd);
+    printf("Setting SR to 150mV/ms MPQ4214...\n");
+    MPQ_SetVREF_SlewRate(SLAVE_ADDRESS,MPQ4214_CONTROL1_SR_150mV_ms);
+    rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,MPQREG_CONTROL1);
+    printf("CONTROL1 reg: 0x%X\n\n",rcvd);
+
+    // Test of MPQ_SetSwitchingFrequency() function
+    rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,MPQREG_CONTROL2);
+    printf("CONTROL2 reg: 0x%X\n",rcvd);
+    printf("Setting switching frequency to 200kHz...\n");
+    MPQ_SetSwitchingFrequency(SLAVE_ADDRESS,MPQ_CONTROL2_FSW_200khz);
+    rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,MPQREG_CONTROL2);
+    printf("CONTROL2 reg: 0x%X\n",rcvd);
+    printf("Setting switching frequency to 300kHz...\n");
+    MPQ_SetSwitchingFrequency(SLAVE_ADDRESS,MPQ_CONTROL2_FSW_300khz);
+    rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,MPQREG_CONTROL2);
+    printf("CONTROL2 reg: 0x%X\n",rcvd);
+    printf("Setting switching frequency to 400kHz...\n");
+    MPQ_SetSwitchingFrequency(SLAVE_ADDRESS,MPQ_CONTROL2_FSW_400khz);
+    rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,MPQREG_CONTROL2);
+    printf("CONTROL2 reg: 0x%X\n",rcvd);
+    printf("Setting switching frequency to 600kHz...\n");
+    MPQ_SetSwitchingFrequency(SLAVE_ADDRESS,MPQ_CONTROL2_FSW_600khz);
+    rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,MPQREG_CONTROL2);
+    printf("CONTROL2 reg: 0x%X\n\n",rcvd);
+
+    // Test of MPQ_Set_BB_FSW() function
+    rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,MPQREG_CONTROL2);
+    printf("CONTROL2 reg: 0x%X\n",rcvd);
+    printf("Setting BB_FSW to higher switching frequency MPQ4210...\n");
+    MPQ_Set_BB_FSW(SLAVE_ADDRESS,MPQ4210_CONTROL2_BBFSW_HIGH);
+    rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,MPQREG_CONTROL2);
+    printf("CONTROL2 reg: 0x%X\n",rcvd);
+    printf("Setting BB_FSW to lower switching frequency MPQ4210...\n");
+    MPQ_Set_BB_FSW(SLAVE_ADDRESS,MPQ4210_CONTROL2_BBFSW_LOW);
+    rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,MPQREG_CONTROL2);
+    printf("CONTROL2 reg: 0x%X\n",rcvd);
+    printf("Setting BB_FSW to higher switching frequency MPQ4214...\n");
+    MPQ_Set_BB_FSW(SLAVE_ADDRESS,MPQ4214_CONTROL2_BBFSW_HIGH);
+    rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,MPQREG_CONTROL2);
+    printf("CONTROL2 reg: 0x%X\n",rcvd);
+    printf("Setting BB_FSW to lower switching frequency MPQ4214...\n");
+    MPQ_Set_BB_FSW(SLAVE_ADDRESS,MPQ4214_CONTROL2_BBFSW_LOW);
+    rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,MPQREG_CONTROL2);
+    printf("CONTROL2 reg: 0x%X\n\n",rcvd);
+
+    // Test of MPQ_setOCPMode() function
+    rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,MPQREG_CONTROL2);
+    printf("CONTROL2 reg: 0x%X\n",rcvd);
+    printf("Setting OCP mode to no protection...\n");
+    MPQ_setOCPMode(SLAVE_ADDRESS,MPQ_CONTROL2_OCP_MODE_NONE);
+    rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,MPQREG_CONTROL2);
+    printf("CONTROL2 reg: 0x%X\n",rcvd);
+    printf("Setting OCP mode to Hiccup protection...\n");
+    MPQ_setOCPMode(SLAVE_ADDRESS,MPQ_CONTROL2_OCP_MODE_HICCUP);
+    rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,MPQREG_CONTROL2);
+    printf("CONTROL2 reg: 0x%X\n",rcvd);
+    printf("Setting OCP mode to Latch off protection...\n");
+    MPQ_setOCPMode(SLAVE_ADDRESS,MPQ_CONTROL2_OCP_MODE_LATCH);
+    rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,MPQREG_CONTROL2);
+    printf("CONTROL2 reg: 0x%X\n\n",rcvd);
+
+    // Test of MPQ_setOVPMode() function
+    rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,MPQREG_CONTROL2);
+    printf("CONTROL2 reg: 0x%X\n",rcvd);
+    printf("Setting OVP mode to no protection...\n");
+    MPQ_setOVPMode(SLAVE_ADDRESS,MPQ_CONTROL2_OVP_MODE_NONE);
+    rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,MPQREG_CONTROL2);
+    printf("CONTROL2 reg: 0x%X\n",rcvd);
+    printf("Setting OVP mode to Hiccup protection...\n");
+    MPQ_setOVPMode(SLAVE_ADDRESS,MPQ_CONTROL2_OVP_MODE_HICCUP);
+    rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,MPQREG_CONTROL2);
+    printf("CONTROL2 reg: 0x%X\n",rcvd);
+    printf("Setting OVP mode to Latch Off protection...\n");
+    MPQ_setOVPMode(SLAVE_ADDRESS,MPQ_CONTROL2_OVP_MODE_LATCH);
+    rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,MPQREG_CONTROL2);
+    printf("CONTROL2 reg: 0x%X\n",rcvd);
 
     // Setting ILIM threshold to 45.1mV
     // Value of the ILIM register should be set as follows
     // ILIM = 011
-    printf("Setting ILIM threshold to 45.1mV\n\n");
-    MPQ_setILIM1(MPQ_ILIM_45_1mV);
+    // printf("Setting ILIM threshold to 45.1mV\n\n");
+    // MPQ_setILIM(SLAVE_ADDRESS,MPQ4210_ILIM_45_1mV);
 
     // Verification of what has been written
     // Verification of what has been written on the eeprom
-    printf("Now reading the loaded configuration\n\n");
-    RegAddress = MPQREG_REF_LSB;
-    rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,RegAddress);
-    printf("Read 0x%X from register 0x%X\n", rcvd, RegAddress);
-    RegAddress = MPQREG_REF_MSB;
-    rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,RegAddress);
-    printf("Read 0x%X from register 0x%X\n", rcvd, RegAddress);
-    RegAddress = MPQREG_CONTROL1;
-    rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,RegAddress);
-    printf("Read 0x%X from register 0x%X\n", rcvd, RegAddress);
-    RegAddress = MPQREG_ILIM;
-    rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,RegAddress);
-    printf("Read 0x%X from register 0x%X\n\n", rcvd, RegAddress);
+    // printf("Now reading the loaded configuration\n\n");
+    // RegAddress = MPQREG_REF_LSB;
+    // rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,RegAddress);
+
+    // printf("Read 0x%X from register 0x%X\n", rcvd, RegAddress);
+    // RegAddress = MPQREG_REF_MSB;
+    // rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,RegAddress);
+    // printf("Read 0x%X from register 0x%X\n", rcvd, RegAddress);
+    // RegAddress = MPQREG_CONTROL1;
+    // rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,RegAddress);
+    // printf("Read 0x%X from register 0x%X\n", rcvd, RegAddress);
+    // RegAddress = MPQREG_ILIM;
+    // rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,RegAddress);
+    // printf("Read 0x%X from register 0x%X\n\n", rcvd, RegAddress);
 
     // Continue with the rest of your main function
 

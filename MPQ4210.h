@@ -10,10 +10,10 @@ extern void SoftwareDelay(uint8_t ms);                                          
 #define MPQ4210_ADDR2                   0x66
 
 //MPQ4214 address definition
-#define MPQ4210_ADDR1                   0x60
-#define MPQ4210_ADDR2                   0x62
-#define MPQ4210_ADDR3                   0x64
-#define MPQ4210_ADDR4                   0x66
+#define MPQ4214_ADDR1                   0x60
+#define MPQ4214_ADDR2                   0x62
+#define MPQ4214_ADDR3                   0x64
+#define MPQ4214_ADDR4                   0x66
 
 //MPQ421x register definition
 #define MPQREG_REF_LSB                  0x00
@@ -29,65 +29,73 @@ extern void SoftwareDelay(uint8_t ms);                                          
 * @{
 */
 
-// MPQ_REF parameters definition
+// MPQ_REF parameters definition for MPQ421x devices
 #define MPQ_REF_LSB_MASK                0x007
 #define MPQ_REF_MSB_MASK                0x7F8               
 
-// MPQ_CONTROL1_GO_BIT parateters definition
+// MPQ_CONTROL1_GO_BIT parateters definition for MPQ421x devices
 #define MPQ_CONTROL1_GO_BIT_MASK        0xFD
 #define MPQ_CONTROL1_GO_BIT_CLR         0x00
 #define MPQ_CONTROL1_GO_BIT_SET         0x02
 
-// MPQ_CONTROL1_ENPWR parameters definition
+// MPQ_CONTROL1_ENPWR parameters definition for MPQ421x devices
 #define MPQ_CONTROL1_ENPWR_MASK         0xFE
 #define MPQ_CONTROL1_ENPWR_DIS          0x00
 #define MPQ_CONTROL1_ENPWR_EN           0x01
 
-// MPQ_CONTROL1_PNG_LATCH parameters definition
+// MPQ_CONTROL1_PNG_LATCH parameters definition for MPQ421x devices
 #define MPQ_CONTROL1_PNG_LATCH_MASK     0xF7
 #define MPQ_CONTROL1_PNG_LATCH_CLR      0x00
 #define MPQ_CONTROL1_PNG_LATCH_SET      0x08
 
-// MPQ_CONTROL1_DITHER parameters definition
+// MPQ_CONTROL1_DITHER parameters definition for MPQ421x devices
 #define MPQ_CONTROL1_DITHER_MASK        0xEF
 #define MPQ_CONTROL1_DITHER_DIS         0x00
 #define MPQ_CONTROL1_DITHER_EN          0x10
 
-// MPQ_CONTROL1_DISCHG parameters definition
+// MPQ_CONTROL1_DISCHG parameters definition for MPQ421x devices
 #define MPQ_CONTROL1_DISCHG_MASK        0xDF
 #define MPQ_CONTROL1_DISCHG_OFF         0x00
 #define MPQ_CONTROL1_DISCHG_ON          0x20
 
-// MPQ_CONTROL1_SR parameters definition
+// MPQ_CONTROL1_SR parameters definition for MPQ4210 devices
 #define MPQ_CONTROL1_SR_MASK            0x3F
-#define MPQ_CONTROL1_SR_38mV_ms         0x00
-#define MPQ_CONTROL1_SR_50mV_ms         0x40
-#define MPQ_CONTROL1_SR_75mV_ms         0x80
-#define MPQ_CONTROL1_SR_150mV_ms        0xC0
+#define MPQ4210_CONTROL1_SR_38mV_ms     0x00
+#define MPQ4210_CONTROL1_SR_50mV_ms     0x40
+#define MPQ4210_CONTROL1_SR_75mV_ms     0x80
+#define MPQ4210_CONTROL1_SR_150mV_ms    0xC0
+// MPQ_CONTROL1_SR parameters definition for MPQ4214 devices
+#define MPQ4214_CONTROL1_SR_38mV_ms     0x00
+#define MPQ4214_CONTROL1_SR_50mV_ms     0x40
+#define MPQ4214_CONTROL1_SR_72mV_ms     0x80
+#define MPQ4214_CONTROL1_SR_150mV_ms    0xC0
 
-// MPQ_CONTROL2_FSW parateters definition
+// MPQ_CONTROL2_FSW parateters definition for MPQ421x devices
 #define MPQ_CONTROL2_FSW_MASK           0x3F
 #define MPQ_CONTROL2_FSW_200khz         0x00
 #define MPQ_CONTROL2_FSW_300khz         0x40
 #define MPQ_CONTROL2_FSW_400khz         0x80
 #define MPQ_CONTROL2_FSW_600khz         0xC0
 
-// MPQ_CONTROL2_BBFSW parateters definition
+// MPQ_CONTROL2_BBFSW parateters definition for MPQ4210 devices
 #define MPQ_CONTROL2_BBFSW_MASK         0xEF
-#define MPQ_CONTROL2_BBFSW_OFF          0x00
-#define MPQ_CONTROL2_BBFSW_ON           0x10
+#define MPQ4210_CONTROL2_BBFSW_LOW      0x00
+#define MPQ4210_CONTROL2_BBFSW_HIGH     0x10
+// MPQ_CONTROL2_BBFSW parateters definition for MPQ4214 devices
+#define MPQ4214_CONTROL2_BBFSW_LOW      0x10
+#define MPQ4214_CONTROL2_BBFSW_HIGH     0x00
 
-// MPQ_CONTROL2_OCP_MODE parameters definition
+// MPQ_CONTROL2_OCP_MODE parameters definition for MPQ421x devices
 #define MPQ_CONTROL2_OCP_MODE_MASK      0xF3
 #define MPQ_CONTROL2_OCP_MODE_NONE      0x00
 #define MPQ_CONTROL2_OCP_MODE_HICCUP    0x04
 #define MPQ_CONTROL2_OCP_MODE_LATCH     0x08
 
-// MPQ_CONTROL2_OVP_MODE parameters definition
+// MPQ_CONTROL2_OVP_MODE parameters definition for MPQ421x devices
 #define MPQ_CONTROL2_OVP_MODE_MASK      0xFC
 #define MPQ_CONTROL2_OVP_MODE_NONE      0x00
-#define MPQ_CONTROL2_OVP_MODE_HICCUP    0x04
-#define MPQ_CONTROL2_OVP_MODE_LATCH     0x08
+#define MPQ_CONTROL2_OVP_MODE_HICCUP    0x01
+#define MPQ_CONTROL2_OVP_MODE_LATCH     0x02
 
 // MPQ_ILIM Parameters definition for MPQ4210 devices
 #define MPQ4210_ILIM_MASK               0xF8
@@ -160,9 +168,8 @@ void MPQ_SetVREF_SlewRate(uint8_t deviceAddress, uint8_t SlewRate);
 // Function to set the switching frequency on the MPQ421x device
 void MPQ_SetSwitchingFrequency(uint8_t deviceAddress,uint8_t Fsw);
 
-// Functions to set and clear BB_FSW bit in MPQ421x devices
-void MPQ_Set_BB_FSW_HIGH(uint8_t deviceAddress);
-void MPQ_Set_BB_FSW_LOW(uint8_t deviceAddress);
+// Function to configure the BuckBoost Region Switching Frequency in MPQ421x devices
+void MPQ_Set_BB_FSW(uint8_t deviceAddress, uint8_t BB_FSW_State);
 
 // Function to set OCP Mode on the MPQ421x device
 void MPQ_setOCPMode(uint8_t deviceAddress,uint8_t OCPMode);
@@ -170,7 +177,7 @@ void MPQ_setOCPMode(uint8_t deviceAddress,uint8_t OCPMode);
 // Function to set OVP Mode on the MPQ421x device
 void MPQ_setOVPMode(uint8_t deviceAddress,uint8_t OVPMode);
 
-// Function to set ILIM thresthold on MPQ4210 devices
+// Function to set ILIM thresthold on MPQ421x devices
 void MPQ_setILIM(uint8_t deviceAddress,uint8_t ILIMthreshold);
 
 // Function to reset Interrupt Status vector in MPQ421x devices

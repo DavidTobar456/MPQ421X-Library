@@ -180,30 +180,24 @@ void MPQ_SetSwitchingFrequency(uint8_t deviceAddress, uint8_t Fsw){
     I2C_WriteRegByte(deviceAddress,MPQREG_CONTROL2,(tmp&MPQ_CONTROL2_FSW_MASK)|Fsw);
 }
 /******************************************
-* @ brief Set Buck-Boost region switching to higher switching frequency
+* @ brief Set Buck-Boost region switching to higher or lower switching frequency
 * @ param uint8_t deviceAddress, contains the address of the MPQ
 *       that is trying to be reached
-* @ note Set the slewrate BB_FSW bit from the CONTROL2 register
+*       uint8_t BB_FSW_State, state of the BB_FSW functionality, can be
+*       set to any of these parameters for MPQ4210 devices
+*       - MPQ4210_CONTROL2_BBFSW_OFF
+*       - MPQ4210_CONTROL2_BBFSW_ON 
+*       And to any of these for MPQ4214 devices
+*       - MPQ4214_CONTROL2_BBFSW_OFF
+*       - MPQ4214_CONTROL2_BBFSW_ON 
+* @ note Set the BB_FSW bit to BB_FSW_State value on CONTROL2 register
 *******************************************/
 // Must use when MPQ4210's address is 0x66
-void MPQ_Set_BB_FSW_HIGH(uint8_t deviceAddress){
+void MPQ_Set_BB_FSW(uint8_t deviceAddress, uint8_t BB_FSW_State){
     // Read CONTROL2 register to a temp variable
     uint8_t tmp = I2C_ReadRegByte(deviceAddress,MPQREG_CONTROL2);
     // Set the GO_BIT bit and keep the others
-    I2C_WriteRegByte(deviceAddress,MPQREG_CONTROL2,(tmp&MPQ_CONTROL2_BBFSW_MASK)|MPQ_CONTROL2_BBFSW_ON);
-}
-/******************************************
-* @ brief Set Buck-Boost region switching to lower switching frequency
-* @ param uint8_t deviceAddress, contains the address of the MPQ
-*       that is trying to be reached
-* @ note Clear the slewrate BB_FSW bit from the CONTROL2 register
-*******************************************/
-// Must use when MPQ4210's address is 0x66
-void MPQ_Set_BB_FSW_HIGH(uint8_t deviceAddress){
-    // Read CONTROL2 register to a temp variable
-    uint8_t tmp = I2C_ReadRegByte(deviceAddress,MPQREG_CONTROL2);
-    // Set the GO_BIT bit and keep the others
-    I2C_WriteRegByte(deviceAddress,MPQREG_CONTROL2,(tmp&MPQ_CONTROL2_BBFSW_MASK)|MPQ_CONTROL2_BBFSW_OFF);
+    I2C_WriteRegByte(deviceAddress,MPQREG_CONTROL2,(tmp&MPQ_CONTROL2_BBFSW_MASK)|BB_FSW_State);
 }
 /******************************************
 * @ brief Configuration of Over Current Protection mode
@@ -303,10 +297,10 @@ void MPQ_IntClear(uint8_t deviceAddress){
 *******************************************/
 // Must use when MPQ4210's address is 0x64
 void MPQ_IntEnable(uint8_t deviceAddress,uint8_t interrupt){
-    // We read the full control2 register in order to be able to modify
-    // the FSW bits without modifying any other register
+    // We read the full Interrupt Mask register in order to be able to modify
+    // the selected interrupt bit without modifying the others
     uint8_t tmp = I2C_ReadRegByte(deviceAddress,MPQREG_INT_MASK);
-    // We modify only de FSW bits and set them to the new Fsw value
+    // We modify only the interrupt bit to change and set it to 1
     I2C_WriteRegByte(deviceAddress,MPQREG_INT_MASK,(tmp&interrupt)|(~interrupt&0xFF));
 }
 /******************************************
@@ -327,10 +321,10 @@ void MPQ_IntEnable(uint8_t deviceAddress,uint8_t interrupt){
 *       is cleared on the Interrupt Mask register
 *******************************************/
 // Must use when MPQ4210's address is 0x64
-void MPQ_IntEnable(uint8_t deviceAddress,uint8_t interrupt){
-    // We read the full control2 register in order to be able to modify
-    // the FSW bits without modifying any other register
+void MPQ_IntDisable(uint8_t deviceAddress,uint8_t interrupt){
+    // We read the full Interrupt Mask register in order to be able to modify
+    // the selected interrupt bit without modifying the others
     uint8_t tmp = I2C_ReadRegByte(deviceAddress,MPQREG_INT_MASK);
-    // We modify only de FSW bits and set them to the new Fsw value
+    // We modify only the interrupt bit to change and set it to 0
     I2C_WriteRegByte(deviceAddress,MPQREG_INT_MASK,(tmp&interrupt)|(~interrupt&0x00));
 }
