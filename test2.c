@@ -306,7 +306,7 @@ int main(){
     // printf("CONTROL2 reg: 0x%X\n",rcvd);
 
     // Test of MPQ_setILIM() function
-    rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,MPQREG_ILIM);
+    uint8_t rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,MPQREG_ILIM);
     printf("ILIM reg: 0x%X\n",rcvd);
     printf("Setting 27.9 mV current limit threshold in MPQ4210...\n");
     MPQ_setILIM(SLAVE_ADDRESS,MPQ4210_ILIM_27_9mV);
@@ -379,7 +379,7 @@ int main(){
     printf("Clearing interrupt status...\n");
     MPQ_IntClear(SLAVE_ADDRESS);
     rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,MPQREG_INT_STATUS);
-    printf("Interrupt Status reg: 0x%X\n",rcvd);
+    printf("Interrupt Status reg: 0x%X\n\n",rcvd);
 
     // Test of MPQ_IntEnable() and MPQ_IntDisable() functions
     rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,MPQREG_INT_MASK);
@@ -389,7 +389,7 @@ int main(){
     rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,MPQREG_INT_MASK);
     printf("Interrupt Mask reg: 0x%X\n",rcvd);
     printf("Enabling PNG interrupt in MPQ4210...\n");
-    MPQ_IntDisable(SLAVE_ADDRESS,MPQ4210_INT_PNG);
+    MPQ_IntEnable(SLAVE_ADDRESS,MPQ4210_INT_PNG);
     rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,MPQREG_INT_MASK);
     printf("Interrupt Mask reg: 0x%X\n",rcvd);
     printf("Enabling OCP interrupt in MPQ4210...\n");
@@ -421,7 +421,7 @@ int main(){
     rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,MPQREG_INT_MASK);
     printf("Interrupt Mask reg: 0x%X\n",rcvd);
     printf("Enabling PNG interrupt in MPQ4214...\n");
-    MPQ_IntDisable(SLAVE_ADDRESS,MPQ4214_INT_PNG);
+    MPQ_IntEnable(SLAVE_ADDRESS,MPQ4214_INT_PNG);
     rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,MPQREG_INT_MASK);
     printf("Interrupt Mask reg: 0x%X\n",rcvd);
     printf("Enabling OCP interrupt in MPQ4214...\n");

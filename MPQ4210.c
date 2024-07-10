@@ -262,7 +262,7 @@ void MPQ_setOVPMode(uint8_t deviceAddress,uint8_t OVPMode){
 *       IAVG Limit = Threshold(V)/Rsense(Ohms)
 *******************************************/
 // Must use when MPQ4210's address is 0x64
-void MPQ_setILIM1(uint8_t deviceAddress, uint8_t ILIMthreshold){
+void MPQ_setILIM(uint8_t deviceAddress, uint8_t ILIMthreshold){
     // We set the ILIM register to the new value set
     I2C_WriteRegByte(deviceAddress,MPQREG_ILIM,ILIMthreshold);
 }
