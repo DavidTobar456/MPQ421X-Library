@@ -95,52 +95,9 @@ int main(){
         fprintf(stderr, "pigpio initialization failed\n");
         return 1;
     }
-    // Loading of the tested register on the I2C EEPROM
-    printf("Now loading the default configuration of the VREF and ILIM registers\n");
-    I2C_WriteRegByte(SLAVE_ADDRESS,MPQREG_REF_LSB,0b100);
-    I2C_WriteRegByte(SLAVE_ADDRESS,MPQREG_REF_MSB,0b111110);
-    I2C_WriteRegByte(SLAVE_ADDRESS,MPQREG_ILIM,0b001);
-    // Verification of what has been written on the eeprom
-    printf("Now reading the loaded configuration\n\n");
-    uint8_t RegAddress = MPQREG_REF_LSB;
-    uint8_t rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,RegAddress);
-    printf("Read 0x%X from register 0x%X\n", rcvd, RegAddress);
-    RegAddress = MPQREG_REF_MSB;
-    rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,RegAddress);
-    printf("Read 0x%X from register 0x%X\n", rcvd, RegAddress);
-    RegAddress = MPQREG_ILIM;
-    rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,RegAddress);
-    printf("Read 0x%X from register 0x%X\n\n", rcvd, RegAddress);
-
-    // Test of the library functions which change VREF and ILIM
-    // Setting voltage to 1.1 V
-    // Values to be set should go as following
-    // REF_LSB = 100
-    // REF_MSB = 10001001
-    printf("Setting voltage reference to 1.1V, VOUT should be 11V\n");
-    MPQ_SetVoltageReference1(1100);
-
-    // Setting ILIM threshold to 45.1mV
-    // Value of the ILIM register should be set as follows
-    // ILIM = 011
-    // printf("Setting ILIM threshold to 45.1mV\n\n");
-    // MPQ_setILIM1(MPQ_ILIM_45_1mV);
-
-    // // Verification of what has been written
-    // // Verification of what has been written on the eeprom
-    // printf("Now reading the loaded configuration\n\n");
-    // RegAddress = MPQREG_REF_LSB;
-    // rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,RegAddress);
-    // printf("Read 0x%X from register 0x%X\n", rcvd, RegAddress);
-    // RegAddress = MPQREG_REF_MSB;
-    // rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,RegAddress);
-    // printf("Read 0x%X from register 0x%X\n", rcvd, RegAddress);
-    // RegAddress = MPQREG_ILIM;
-    // rcvd = I2C_ReadRegByte(SLAVE_ADDRESS,RegAddress);
-    // printf("Read 0x%X from register 0x%X\n\n", rcvd, RegAddress);
-
-    // // Continue with the rest of your main function
-
+    // Here you should call the functions you want to test
+    
+    // Do not delete
     gpioTerminate();
     return 0;
 }

@@ -53,6 +53,17 @@ void MPQ_EnablePowerSwitching(uint8_t deviceAddress){
     // Set the ENPWR bit and keep the others
     I2C_WriteRegByte(deviceAddress,MPQREG_CONTROL1,(tmp&MPQ_CONTROL1_ENPWR_MASK)|MPQ_CONTROL1_ENPWR_EN);
 }
+
+/******************************************
+* @ brief Get ENPWR bit status
+* @ param uint8_t deviceAddress, contains the address of the MPQ
+*       that is trying to be reached
+* @ note Sets the ENPWR bit of the CONTROL1 register
+*******************************************/
+uint8_t MPQ_GetENPWRStatus(uint8_t deviceAddress){
+    uint8_t tmp = I2C_ReadRegByte(deviceAddress,MPQREG_CONTROL1)&MPQ_CONTROL1_ENPWR_RMASK;
+    return tmp;
+}
 /******************************************
 * @ brief Set the GOB_BIT
 * @ param uint8_t deviceAddress, contains the address of the MPQ

@@ -40,6 +40,7 @@ extern void SoftwareDelay(uint8_t ms);                                          
 
 // MPQ_CONTROL1_ENPWR parameters definition for MPQ421x devices
 #define MPQ_CONTROL1_ENPWR_MASK         0xFE
+#define MPQ_CONTROL1_ENPWR_RMASK        0x01
 #define MPQ_CONTROL1_ENPWR_DIS          0x00
 #define MPQ_CONTROL1_ENPWR_EN           0x01
 
@@ -142,6 +143,7 @@ void MPQ_SetVoltageReference(uint8_t deviceAddress,uint16_t Vref);
 // Functions to set and clear ENPWR bit on MPQ421x devices
 void MPQ_DisablePowerSwitching(uint8_t deviceAddress);
 void MPQ_EnablePowerSwitching(uint8_t deviceAddress);
+uint8_t MPQ_GetENPWRStatus(uint8_t deviceAddress);
 
 // Function to set GO_BIT on MPQ421x devices
 void MPQ_SET_GOBIT(uint8_t deviceAddress);
