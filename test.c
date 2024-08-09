@@ -89,6 +89,18 @@ void SoftwareDelay(uint8_t ms){
     usleep(ms*1000);
 }
 
+uint16_t getReferenceVoltage(float R1, float R2, float Vout){
+    float VRefF = (R1/(R1+R2))*Vout;
+    uint16_t Vref = (uint16_t)VRefF;
+    if(Vref>2047){
+        float VoutMax = ((R1+R2)/R2)*2047.00;
+        printf("ERROR: Vout %.1f V to high for current configuration, maximum achievable voltage for a configuration with R1 = %.1f Ohms and R2 = %.1f Ohms is %.1f V\n",Vout,R1,R2,VoutMax);
+        printf("Value for %.1f output is provided instead";VoutMax);
+        Vref = 2047;
+    }
+    return Vref
+}
+
 int main(){
     // Initialize the pigpio library
     if (gpioInitialise() < 0) {
@@ -96,7 +108,17 @@ int main(){
         return 1;
     }
     // Here you should call the functions you want to test
-    
+    // Calculate the value to be loaded
+    float R1 = 90100.00;
+    float R2 = 5100.00;
+    float Vout = 5.00;
+    uint16_t Vref = getReferenceVoltage(R1,R2,Vout);
+    // Set reference voltage for 5V output
+    MPQ_SetVoltageReference(0x60,Vref);
+    // Set reference voltage for 36V output
+    Vout = 36.00;
+    Vref = getReferenceVoltage(R1,R2,Vout);
+    MPQ_SetVoltageReference(0x60,Vref);
     // Do not delete
     gpioTerminate();
     return 0;
