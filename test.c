@@ -91,14 +91,14 @@ void SoftwareDelay(uint8_t ms){
 
 uint16_t getReferenceVoltage(float R1, float R2, float Vout){
     float VRefF = (R1/(R1+R2))*Vout;
-    uint16_t Vref = (uint16_t)VRefF;
+    uint16_t Vref = (uint16_t)VRefF*1000;
     if(Vref>2047){
         float VoutMax = ((R1+R2)/R2)*2047.00;
         printf("ERROR: Vout %.1f V to high for current configuration, maximum achievable voltage for a configuration with R1 = %.1f Ohms and R2 = %.1f Ohms is %.1f V\n",Vout,R1,R2,VoutMax);
-        printf("Value for %.1f output is provided instead";VoutMax);
+        printf("Value for %.1f output is provided instead",VoutMax);
         Vref = 2047;
     }
-    return Vref
+    return Vref;
 }
 
 int main(){
